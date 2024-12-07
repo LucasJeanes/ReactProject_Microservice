@@ -65,20 +65,17 @@ router.post('/updateMeeting', async function (req, res, next) {
 
 // cruD   Should use DELETE . . . we'll fix this is Cloud next term
 router.post('/deleteMeeting', async function (req, res, next) {
-  let retVal = { response: "fail" }
-  await meetings.deleteOne({ _id: req.body._id },
-    function (err, res) {
-      if (!err) {
-        retVal = { response: "success" }
-      }
+  let retVal = { success: false }
+  try {
+    const result = await meetings.deleteOne({ meetingId: req.body.meetingId });
+    if (result.deletedCount > 0) {
+      retVal = { success: true }
     }
-  )
+  } catch (err) {
+    console.log(err);
+  }
   res.json(retVal);
 });
-
-
-
-
 
 router.post('/getMeetings', async function (req, res, next) {
   const meetings = await getMeetings();
